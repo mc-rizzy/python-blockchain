@@ -21,12 +21,12 @@ blockchain = BC.Blockchain()
 
 @app.route('/mine', methods=['GET'])
 def mine():
-    # We run the proof of work algorithm to get the next proof...
+    # run the proof of work algorithm to get the next proof, AKA mining
     last_block = blockchain.last_block
     last_proof = last_block['proof']
     proof = blockchain.proof_of_work(last_proof)
 
-    # We must receive a reward for finding the proof.
+    # receive a reward for finding the proof.
     # The sender is "0" because its myself, lol
     blockchain.new_transaction(
         sender="0",
@@ -77,7 +77,7 @@ def full_chain():
 
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000)
+    app.run(host='0.0.0.0', port=5500)
 
 
 '''

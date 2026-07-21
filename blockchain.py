@@ -76,7 +76,7 @@ class Blockchain(object):
     def proof_of_work(self, last_proof):
         """
         Simple Proof of Work Algorithm:
-         - Find a number p' such that hash(pp') ends with 1234, where p is the previous p'
+         - Find a number p' such that hash(pp') ends with 000, where p is the previous p'
          - p is the previous proof, and p' is the new proof
         :param last_proof: <int>
         :return: <int>
@@ -85,13 +85,14 @@ class Blockchain(object):
         proof = 0
         while self.valid_proof(last_proof, proof) is False:
             proof += 1
+            print(proof) # for debugging the get request
 
         return proof
 
     @staticmethod
     def valid_proof(last_proof, proof):
         """
-        Validates the Proof: Does hash(last_proof, proof) end with 1234?
+        Validates the Proof: Does hash(last_proof, proof) end with 000?
         :param last_proof: <int> Previous Proof
         :param proof: <int> Current Proof
         :return: <bool> True if correct, False if not.
@@ -99,7 +100,9 @@ class Blockchain(object):
 
         guess = f'{last_proof}{proof}'.encode()
         guess_hash = hashlib.sha256(guess).hexdigest()
-        return guess_hash[0:-4] == "1234"
+
+        print(guess_hash) # for debugging the get request
+        return guess_hash[:-1] == "0"
 
 
 # Example Block:
