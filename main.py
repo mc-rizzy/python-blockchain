@@ -18,7 +18,7 @@ blockchain = BC.Blockchain()
 
 
 
-
+#mines a new block and adds it to the blockchain
 @app.route('/mine', methods=['GET'])
 def mine():
     # run the proof of work algorithm to get the next proof, AKA mining
@@ -49,7 +49,7 @@ def mine():
   
 
 
-
+# makes a new transaction in the blockchain
 @app.route('/transactions/new', methods=['POST'])
 def new_transaction():
     values = request.get_json()
@@ -66,7 +66,7 @@ def new_transaction():
     return jsonify(response), 201
 
 
-
+# returns the blockchain in JSON format
 @app.route('/chain', methods=['GET'])
 def full_chain():
     response = {
@@ -76,8 +76,46 @@ def full_chain():
     return jsonify(response), 200
 
 
+# adds nodes to the network and gets the network of nodes itself
+@app.route('/nodes/register', methods=['POST'])
+def register_nodes():
+    values = request.get_json()
+
+    nodes = values.get('nodes')
+    if nodes is None:
+        return "Error: Please supply a valid list of nodes", 400
+
+    for node in nodes:
+        blockchain.register_node(node)
+
+    response = {
+        'message': 'New nodes have been added',
+        'total_nodes': list(blockchain.nodes),
+    }
+    return jsonify(response), 201
+
+
+# resolves inconsistent blockchain copies using the authoritative blockchain
+@app.route('/nodes/resolve', methods=['GET'])
+def consensus():
+    replaced = blockchain.resolve_conflicts()
+
+    if replaced:
+        response = {
+            'message': 'Our chain was replaced',
+            'new_chain': blockchain.chain
+        }
+    else:
+        response = {
+            'message': 'Our chain is authoritative',
+            'chain': blockchain.chain
+        }
+
+    return jsonify(response), 200
+
+
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5500)
+    app.run(host='0.0.0.0', port=5501)
 
 
 '''
