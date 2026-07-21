@@ -4,6 +4,8 @@ import json
 from time import time
 from uuid import uuid4
 
+hashEnd = "1234"
+
 class Blockchain(object):
     def __init__(self):
         self.chain = []
@@ -76,7 +78,7 @@ class Blockchain(object):
     def proof_of_work(self, last_proof):
         """
         Simple Proof of Work Algorithm:
-         - Find a number p' such that hash(pp') ends with 000, where p is the previous p'
+         - Find a number p' such that hash(pp') ends with hashEnd, where p is the previous p'
          - p is the previous proof, and p' is the new proof
         :param last_proof: <int>
         :return: <int>
@@ -92,7 +94,7 @@ class Blockchain(object):
     @staticmethod
     def valid_proof(last_proof, proof):
         """
-        Validates the Proof: Does hash(last_proof, proof) end with 000?
+        Validates the Proof: Does hash(last_proof, proof) end with hashEnd?
         :param last_proof: <int> Previous Proof
         :param proof: <int> Current Proof
         :return: <bool> True if correct, False if not.
@@ -102,7 +104,7 @@ class Blockchain(object):
         guess_hash = hashlib.sha256(guess).hexdigest()
 
         print(guess_hash) # for debugging the get request
-        return guess_hash[:-1] == "0"
+        return guess_hash[:len(hashEnd)] == hashEnd
 
 
 # Example Block:
